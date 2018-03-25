@@ -1,0 +1,14 @@
+version: '3'
+
+volumes:
+  warp10-data:
+    driver: local
+
+services:
+  warp10:
+    image: warp10io/warp10
+    ports: 
+      - 8080:8080 
+      - 8081:8081
+    volumes:
+      - warp10-data:/data
