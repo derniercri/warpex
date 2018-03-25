@@ -1,11 +1,11 @@
-defmodule Warp10.HTTP do
+defmodule Warpex.HTTP do
 
   @moduledoc false
 
   def get(endpoint) do
-    headers = ["Authorization": Warp10.get_key(:read)]
-    opts = Warp10.httpoison_opts()
-    HTTPoison.get(Warp10.get_key(:address) <> endpoint, Keyword.merge(@headers, headers), opts)
+    headers = ["Authorization": Warpex.get_key(:read)]
+    opts = Warpex.httpoison_opts()
+    HTTPoison.get(Warpex.get_key(:address) <> endpoint, Keyword.merge(@headers, headers), opts)
     |> handle_response
   end
 

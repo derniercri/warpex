@@ -10,11 +10,11 @@ use Mix.Config
 
 # You can configure your application as:
 #
-#     config :warp10, key: :value
+#     config :warpex, key: :value
 #
 # and access this configuration in your application as:
 #
-#     Application.get_env(:warp10, :key)
+#     Application.get_env(:warpex, :key)
 #
 # You can also configure a 3rd-party app:
 #

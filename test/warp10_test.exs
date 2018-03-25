@@ -1,8 +1,8 @@
-defmodule Warp10Test do
+defmodule WarpexTest do
   use ExUnit.Case
-  doctest Warp10
+  doctest Warpex
 
   test "greets the world" do
-    assert Warp10.hello() == :world
+    assert Warpex.hello() == :world
   end
 end
