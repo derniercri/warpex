@@ -26,15 +26,31 @@ defmodule Warpex do
   Information about the contents of the response can be found
   """
 
-  defp map_to_text(%{"ts" => ts, "lat:lon" => latlon, "elev" => elev, "name" => name, "val" => val, "labels" => labels}) do
+  defp map_to_text([h | t], content) do
+    map_to_text(t, "#{content}\n#{transform_item(h)}" )
+  end
+
+  defp map_to_text([], content) do
+    content        
+  end
+
+  defp transform_item(%{"ts" => ts, "lat:lon" => latlon, "elev" => elev, "name" => name, "val" => val, "labels" => labels}) do
     "#{ts}/#{latlon}/#{elev} #{name}{#{labels}} #{val}"
   end
 
-  defp map_to_text(%{"ts" => ts, "name" => name, "val" => val, "labels" => labels}) do
-    map_to_text(%{"ts" => ts, "name" => name, "val" => val, "labels" => labels, "lat:lon" => "", "elev" => ""})
+  defp transform_item(%{"ts" => ts, "name" => name, "val" => val, "labels" => labels}) do
+    transform_item(%{"ts" => ts, "name" => name, "val" => val, "labels" => labels, "lat:lon" => "", "elev" => ""})
   end
 
-  def save(data) do
-    HTTP.post("/api/v0/update", Enum.map(data, &map_to_text/1))
+  def update(data) do
+    HTTP.post("/api/v0/update", map_to_text(data, ""))
+  end
+
+  def fetch(selector, start, stop) do
+    HTTP.get("/api/v0/fetch", %{selector: selector, start: DateTime.to_iso8601(start), stop: DateTime.to_iso8601(stop)})
+  end
+
+  def parse_result(data) do
+    HTTP.parse_response(String.split(data, "\n"), %{}, [])
   end
 end

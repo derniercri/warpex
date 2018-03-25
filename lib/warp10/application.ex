@@ -7,8 +7,8 @@ defmodule Warpex.Application do
 
   def start(_type, _args) do
     address = Application.get_env(:warpex, :address, System.get_env("WARP10_ADDRESS"))
-    read_key = Application.get_env(:warpex, :address, System.get_env("WARP10_READ_KEY"))
-    write_key = Application.get_env(:warpex, :address, System.get_env("WARP10_WRITE_KEY"))
+    read_key = Application.get_env(:warpex, :read_key, System.get_env("WARP10_READ_KEY"))
+    write_key = Application.get_env(:warpex, :write_key, System.get_env("WARP10_WRITE_KEY"))
 
     httpoison_opts = Application.get_env(:warpex, :httpoison_opts, [])
 
