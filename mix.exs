@@ -29,6 +29,7 @@ defmodule Warpex.MixProject do
   defp deps do
     [
       {:httpoison, "~> 1.0"},
+      {:ex_doc, "~> 0.16", only: :dev}
     ]
   end
 
