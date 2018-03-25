@@ -2,6 +2,22 @@ defmodule Warpex.HTTP do
   alias Warpex.Application
   @moduledoc false
 
+  def map_to_text([h | t], content) do
+    map_to_text(t, "#{content}\n#{transform_item(h)}" )
+  end
+
+  def map_to_text([], content) do
+    content        
+  end
+
+  def transform_item(%{"ts" => ts, "lat:lon" => latlon, "elev" => elev, "name" => name, "val" => val, "labels" => labels}) do
+    "#{ts}/#{latlon}/#{elev} #{name}{#{labels}} #{val}"
+  end
+
+  def transform_item(%{"ts" => ts, "name" => name, "val" => val, "labels" => labels}) do
+    transform_item(%{"ts" => ts, "name" => name, "val" => val, "labels" => labels, "lat:lon" => "", "elev" => ""})
+  end
+
   defp headers(key_type) do
       [
         "X-Warp10-Token": Application.get_key(key_type),

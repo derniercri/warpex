@@ -12,7 +12,7 @@ def application do
 end
   
 def deps do
-  [{:warpex, "~> 0.1"}]
+  [{:warpex, "~> 1.1"}]
 end
 ```
 
@@ -32,12 +32,18 @@ And then call functions like:
 ```elixir
 {status, response} = Warpex.update(
     [%{
-        "labels" => "label1=anything", 
+        "labels" => "label1=anything,label2=anotherthing", 
         "name" => "metric.1.memory_available", 
         "val" => 12, 
         "ts" => 1521969018754000
     }])
 ```
+
+
+```elixir
+{status, response} = Warpex.fetch("~metric.1.*{}", start, stop)
+```
+
 `status` is either `:ok` or `:error`.
 
 `response` is the raw response from Warp10 as text
