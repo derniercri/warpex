@@ -1,13 +1,16 @@
 defmodule Warpex.MixProject do
   use Mix.Project
 
+  @version "1.1.0"
+
   def project do
     [
       app: :warpex,
-      version: "0.1.0",
+      version: @version,
       elixir: "~> 1.6",
       description: "Wrap10 client",
       package: package(),
+      docs: docs(),
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
       deps: deps()
@@ -26,6 +29,13 @@ defmodule Warpex.MixProject do
   defp deps do
     [
       {:httpoison, "~> 1.0"},
+    ]
+  end
+
+  def docs do
+    [
+      extras: ["README.md", "CHANGELOG.md"],
+      source_ref: "v#{@version}"
     ]
   end
 
