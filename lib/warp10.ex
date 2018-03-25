@@ -3,7 +3,6 @@ defmodule Warpex do
 
   @moduledoc """
   Documentation for Warpex.
-  
 
   ## Usage
   Add it to your applications and dependencies in `mix.exs`:
@@ -20,10 +19,9 @@ defmodule Warpex do
         write_key:  "xxxxx",  # defaults to System.get_env("WARP10_WRITE_KEY")
         httpoison_opts: [timeout: 5000]  # defaults to []
   And then call functions like:
-      {status, response} = Warpex.add_event("dinner.tacos", %{test: "tacos"})
+      {status, response} = Warpex.update([%{"labels" => "label1=anything", "name" => "metric.1.memory_available", "val" => 12, "ts" => 1521969018754000}])
   `status` is either `:ok` or `:error`.
-  `response` is a Map converted from the JSON response from Keen.
-  Information about the contents of the response can be found
+  `response` is the raw response from Warp10 as text
   """
 
   defp map_to_text([h | t], content) do
