@@ -1,20 +1,25 @@
 defmodule Warpex.HTTP do
-
+  alias Warpex.Application
   @moduledoc false
 
+  defp headers(key_type) do
+      [
+        "X-Warp10-Token": Application.get_key(:write),
+        "Content-Type": "text/plain"
+      ]
+  end
+
   def get(endpoint) do
-    headers = ["Authorization": Warpex.get_key(:read)]
-    opts = Warpex.httpoison_opts()
-    HTTPoison.get(Warpex.get_key(:address) <> endpoint, Keyword.merge(@headers, headers), opts)
+    opts = Application.httpoison_opts()
+    HTTPoison.get(Application.address() <> endpoint, headers(:read), opts)
     |> handle_response
   end
 
-  #def post(endpoint, data, key_type \\ :write) do
-  #  headers = ["Authorization": Keenex.get_key(key_type)]
-  #  opts = Keenex.httpoison_opts()
-  #  HTTPoison.post(@url <> endpoint, Poison.encode!(data), Keyword.merge(@headers, headers), opts)
-  #  |> handle_response
-  #end
+  def post(endpoint, data) do
+    opts = Application.httpoison_opts()
+    HTTPoison.post(Application.address() <> endpoint, Poison.encode!(data), headers(:write), opts)
+    |> handle_response
+  end
 
   defp handle_response(response) do
     case response do

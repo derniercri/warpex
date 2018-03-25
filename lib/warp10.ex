@@ -25,4 +25,16 @@ defmodule Warpex do
   `response` is a Map converted from the JSON response from Keen.
   Information about the contents of the response can be found
   """
+
+  defp map_to_text(%{"ts" => ts, "lat:lon" => latlon, "elev" => elev, "name" => name, "val" => val, "labels" => labels}) do
+    "#{ts}/#{latlon}/#{elev} #{name}{#{labels}} #{val}"
+  end
+
+  defp map_to_text(%{"ts" => ts, "name" => name, "val" => val, "labels" => labels}) do
+    map_to_text(%{"ts" => ts, "name" => name, "val" => val, "labels" => labels, "lat:lon" => "", "elev" => ""})
+  end
+
+  def save(data) do
+    HTTP.post("/api/v0/update", Enum.map(data, &map_to_text/1))
+  end
 end

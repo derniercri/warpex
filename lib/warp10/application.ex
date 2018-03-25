@@ -6,22 +6,11 @@ defmodule Warpex.Application do
   use Application
 
   def start(_type, _args) do
-    # List all child processes to be supervised
-    #children = [
-      # Starts a worker by calling: Warpex.Worker.start_link(arg)
-      # {Warpex.Worker, arg},
-    #]
-
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
-    #opts = [strategy: :one_for_one, name: Warpex.Supervisor]
-    #Supervisor.start_link(children, opts)
-
     address = Application.get_env(:warpex, :address, System.get_env("WARP10_ADDRESS"))
     read_key = Application.get_env(:warpex, :address, System.get_env("WARP10_READ_KEY"))
     write_key = Application.get_env(:warpex, :address, System.get_env("WARP10_WRITE_KEY"))
 
-    httpoison_opts = Application.get_env(:keenex, :httpoison_opts, [])
+    httpoison_opts = Application.get_env(:warpex, :httpoison_opts, [])
 
     config = %{
       address: address,
@@ -30,5 +19,25 @@ defmodule Warpex.Application do
       httpoison_opts: httpoison_opts,
     }
     Agent.start_link(fn -> config end, name: __MODULE__)
+  end
+
+  @doc false
+  def get_key(key_type) do
+    case key_type do
+      :write ->
+        Agent.get(__MODULE__, fn(state) -> state.write_key end)
+      :read ->
+        Agent.get(__MODULE__, fn(state) -> state.read_key end)
+    end
+  end
+
+  @doc false
+  def address() do
+    Agent.get(__MODULE__, fn(state) -> state.address end)
+  end
+
+  @doc false
+  def httpoison_opts() do
+    Agent.get(__MODULE__, fn(state) -> state.httpoison_opts end)
   end
 end
