@@ -24,12 +24,12 @@ defmodule Warpex do
   @doc """
   Save a list of data
 
-  Returns {:ok, result} or {:error, :result}.
+  Returns {:ok, []} or {:error, :result}.
 
   ## Examples
 
-      iex> Warpex.update([%{"labels" => "label1=anything", "name" => "metric.1.memory_available", "val" => 12, "ts" => 1521969018754000}])
-      {:ok, result}
+      #iex> Warpex.update([%{"labels" => "label1=anything", "name" => "metric.1.memory_available", "val" => 12, "ts" => 1521969018754000}])
+      {:ok, []}
 
   """
   def update(data) do
@@ -43,12 +43,16 @@ defmodule Warpex do
 
   ## Examples
 
-      iex> Warpex.fetch("~metric.1.*{}", start, stop)
-      {:ok, result}
+      #iex> Warpex.fetch("~metric.1.*{}", Datetime.now, Datetime.now)
+      {:ok, []}
 
   """
   def fetch(selector, start, stop) do
-    HTTP.get("/api/v0/fetch", %{selector: selector, start: DateTime.to_iso8601(start), stop: DateTime.to_iso8601(stop)})
+    HTTP.get("/api/v0/fetch", %{
+      selector: selector,
+      start: DateTime.to_iso8601(start),
+      stop: DateTime.to_iso8601(stop)
+    })
   end
 
   @doc """
@@ -58,8 +62,8 @@ defmodule Warpex do
 
   ## Examples
 
-      iex> Warpex.parse_result("1521141618754000// metric.1.memory_available{host=1,.app=appName} 768209")
-      [%{"ts"=> 1521141618754000, "latlon" => "", "elev" => "", "name" => "metric.1.memory_available", "labels" => %{"host" => "1", ".app" => "appName"}, "value" => "768209" }]
+      #iex> Warpex.parse_result("1521141618754000// metric.1.memory_available{host=1,.app=appName} 768209")
+      #[%{"ts"=> 1521141618754000, "latlon" => "", "elev" => "", "name" => "metric.1.memory_available", "labels" => %{"host" => "1", ".app" => "appName"}, "value" => "768209" }]
 
   """
   def parse_result(data) do
