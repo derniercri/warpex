@@ -1,7 +1,7 @@
 defmodule Warpex.MixProject do
   use Mix.Project
 
-  @version "1.1.1"
+  @version "1.1.2"
 
   def project do
     [
@@ -11,8 +11,8 @@ defmodule Warpex.MixProject do
       description: "Wrap10 client",
       package: package(),
       docs: docs(),
-      build_embedded: Mix.env == :prod,
-      start_permanent: Mix.env == :prod,
+      build_embedded: Mix.env() == :prod,
+      start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
   end
@@ -41,11 +41,15 @@ defmodule Warpex.MixProject do
   end
 
   defp package do
-    [ # These are the default files included in the package
+    # These are the default files included in the package
+    [
       files: ["lib", "mix.exs", "README.md"],
       maintainers: ["Guillaume Bailleul<laibulle@gmail.com>"],
       licenses: ["MIT"],
-      links: %{ "GitHub" => "https://github.com/derniercri/warpex", "DernierCri" => "https://derniercri.io/" }
+      links: %{
+        "GitHub" => "https://github.com/derniercri/warpex",
+        "DernierCri" => "https://derniercri.io/"
+      }
     ]
   end
 end

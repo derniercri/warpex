@@ -33,7 +33,7 @@ defmodule Warpex do
 
   """
   def update(data) do
-    HTTP.post("/api/v0/update", Http.map_to_text(data, ""))
+    HTTP.post("/api/v0/update", HTTP.map_to_text(data, ""))
   end
 
   @doc """
