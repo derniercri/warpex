@@ -1,5 +1,6 @@
 defmodule Warpex do
   alias Warpex.HTTP
+  alias Warpex.Application
 
   @moduledoc """
   Documentation for Warpex.
@@ -77,5 +78,9 @@ defmodule Warpex do
   """
   def parse_result(data) do
     HTTP.parse_response(String.split(data, "\n"), %{}, [])
+  end
+
+  def get_token(key_type) do
+    Application.get_key(key_type)
   end
 end
