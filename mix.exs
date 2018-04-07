@@ -1,7 +1,7 @@
 defmodule Warpex.MixProject do
   use Mix.Project
 
-  @version "1.1.5"
+  @version "1.1.6"
 
   def project do
     [
@@ -29,6 +29,7 @@ defmodule Warpex.MixProject do
   defp deps do
     [
       {:httpoison, "~> 1.0"},
+      {:poison, "~> 3.1"},
       {:ex_doc, "~> 0.16", only: :dev}
     ]
   end

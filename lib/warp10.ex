@@ -62,7 +62,10 @@ defmodule Warpex do
   Returns {:ok, result} or {:error, :result}.
   """
   def exec_warpscript(script) do
-    HTTP.post("/api/v0/exec/warpscript", script)
+    case HTTP.post("/api/v0/exec/warpscript", script) do
+      {:ok, text} -> {:ok, Poison.decode!(text)}
+      {:error, error} -> {:error, error}
+    end
   end
 
   @doc """
