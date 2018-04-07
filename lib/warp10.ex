@@ -56,6 +56,15 @@ defmodule Warpex do
   end
 
   @doc """
+  Execute warpcript
+
+  Returns {:ok, result} or {:error, :result}.
+  """
+  def exec_warpscript(script) do
+    HTTP.post("/api/v0/exec/warpscript", script)
+  end
+
+  @doc """
   Parse a Warp10 result
 
   Returns {:ok, result} or {:error, :result}.
