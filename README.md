@@ -1,5 +1,7 @@
 # Warpex
 
+[![Build Status](https://travis-ci.org/derniercri/warpex.svg?branch=master)](https://travis-ci.org/derniercri/warpex)
+
 Warpex is a Warp10 client for Elixir.
 
 ## Usage
