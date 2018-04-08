@@ -1,14 +1,14 @@
 defmodule Warpex.MixProject do
   use Mix.Project
 
-  @version "1.1.7"
+  @version "1.1.8"
 
   def project do
     [
       app: :warpex,
       version: @version,
       elixir: "~> 1.6",
-      description: "Wrap10 client",
+      description: "Warp10 Geo Time Series database client for Elixir",
       package: package(),
       docs: docs(),
       build_embedded: Mix.env() == :prod,
