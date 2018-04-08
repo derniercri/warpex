@@ -1,6 +1,6 @@
 # Warpex
 
-Warpex is a Warp10 client for Elixir. It is a __work in progress__, use it at your own risk.
+Warpex is a Warp10 client for Elixir.
 
 ## Usage
 
