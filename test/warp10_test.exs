@@ -3,7 +3,7 @@ defmodule WarpexTest do
   doctest Warpex
 
   @data """
-  1523057810409985// sensor.1.latency{sate=unknow,.app=ovh.bggfecgmkkabj} 557
+  1523057810409985// sensor.1.latency{state=unknow,.app=ovh.bggfecgmkkabj} 557
   =1523057750319780// 557
   =1523057554653873// 384
   =1523057494566067// 384
@@ -27,6 +27,8 @@ defmodule WarpexTest do
 
   test "parse response" do
     items = Warpex.parse_result(@data)
+
+    assert List.last(items)["labels"]["state"] == "unknow"
     assert List.last(items)["ts"] == 1_523_054_428_586_077
   end
 end

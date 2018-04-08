@@ -96,9 +96,21 @@ defmodule Warpex.HTTP do
 
   defp parse_rest([def, value]) do
     [name, rest] = String.split(def, "{")
-    [labels, _] = String.split(rest, "}")
+    [labels_text, _] = String.split(rest, "}")
+
+    labels = parse_labels(String.split(labels_text, ","), %{})
 
     %{"name" => name, "labels" => labels, "value" => value}
+  end
+
+  defp parse_labels([h | t], labels) do
+    [key, value] = String.split(h, "=")
+    labels = Map.put(labels, key, value)
+    parse_labels(t, labels)
+  end
+
+  defp parse_labels([], labels) do
+    labels
   end
 
   defp parse_rest([value]) do
