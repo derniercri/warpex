@@ -39,6 +39,14 @@ And then call functions like:
     }])
 ```
 
+```elixir
+"'#{Warpex.get_token(:read)}'  // Put your token on the stack                                                                                                           
+'token' STORE // Store it in a variable   
+[ $token '~sensor.#{sensor.id}.*' {  } #{start} #{delta} ] FETCH  
+[ SWAP bucketizer.mean 0 0 1 ] BUCKETIZE"     
+|> Warpex.exec_warpscript()
+```
+
 
 ```elixir
 {status, response} = Warpex.fetch("~metric.1.*{}", start, stop)
