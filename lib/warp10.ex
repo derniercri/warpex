@@ -34,7 +34,7 @@ defmodule Warpex do
 
   """
   def update(data) do
-    HTTP.post("/api/v0/update", HTTP.map_to_text(data, ""))
+    HTTP.post("/api/v0/update", HTTP.map_to_text(data))
   end
 
   @doc """
@@ -63,7 +63,7 @@ defmodule Warpex do
   """
   def exec_warpscript(script) do
     case HTTP.post("/api/v0/exec/warpscript", script) do
-      {:ok, text} -> {:ok, Poison.decode!(text)}
+      {:ok, text} -> Poison.decode(text)
       {:error, error} -> {:error, error}
     end
   end
@@ -80,7 +80,7 @@ defmodule Warpex do
 
   """
   def parse_result(data) do
-    HTTP.parse_response(String.split(data, "\n"), %{}, [])
+    HTTP.parse_response(%{}, String.split(data, "\n"), [])
   end
 
   def get_token(key_type) do

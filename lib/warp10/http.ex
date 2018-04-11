@@ -2,34 +2,18 @@ defmodule Warpex.HTTP do
   alias Warpex.Application
   @moduledoc false
 
-  def map_to_text([h | t], content) do
-    map_to_text(t, "#{content}\n#{transform_item(h)}")
+  def map_to_text(data) do
+    Enum.reduce(data, "", &("#{&2}\n#{transform_item(&1)}"))
   end
 
-  def map_to_text([], content) do
-    content
-  end
-
-  def transform_item(%{
-        "ts" => ts,
-        "lat:lon" => latlon,
-        "elev" => elev,
-        "name" => name,
-        "val" => val,
-        "labels" => labels
-      }) do
-    "#{ts}/#{latlon}/#{elev} #{name}{#{labels}} #{val}"
-  end
-
-  def transform_item(%{"ts" => ts, "name" => name, "val" => val, "labels" => labels}) do
-    transform_item(%{
-      "ts" => ts,
-      "name" => name,
-      "val" => val,
-      "labels" => labels,
-      "lat:lon" => "",
-      "elev" => ""
-    })
+  def transform_item(item) do
+    item
+    |> Map.put_new("lat:lon", "")
+    |> Map.put_new("elev", "")
+    |> (fn i ->
+        "#{i["ts"]}/#{i["lat:lon"]}/#{i["elev"]} "
+        <> "#{i["name"]}{#{i["labels"]}} #{i["val"]}"
+      end).()
   end
 
   defp headers(key_type) do
@@ -41,17 +25,19 @@ defmodule Warpex.HTTP do
 
   def get(endpoint, params) do
     opts = Application.httpoison_opts()
-    opts = opts ++ [params: params]
+    opts = [ {:params, params} | opts ]
 
-    HTTPoison.get(Application.address() <> endpoint, headers(:read), opts)
-    |> handle_response
+    Application.address() <> endpoint
+    |> HTTPoison.get(headers(:read), opts)
+    |> handle_response()
   end
 
   def post(endpoint, data) do
     opts = Application.httpoison_opts()
 
-    HTTPoison.post(Application.address() <> endpoint, data, headers(:write), opts)
-    |> handle_response
+    Application.address() <> endpoint
+    |> HTTPoison.post(data, headers(:write), opts)
+    |> handle_response()
   end
 
   defp handle_response(response) do
@@ -69,38 +55,54 @@ defmodule Warpex.HTTP do
     end
   end
 
-  def parse_response([], _previous, data) do
-    data
+  def parse_response( _previous, [], data) do
+    Enum.reverse(data)
   end
 
-  def parse_response([h | t], previous, data) do
-    if h != "" do
-      current = parse_row(h)
+  def parse_response(previous, ["" | tail], data) do
+    parse_response(previous, tail, data)
+  end
 
-      if(current["name"] == nil) do
-        current = Map.put(current, "name", previous["name"])
-        current = Map.put(current, "labels", previous["labels"])
-      end
+  def parse_response(previous, [head | tail],  data) do
+    head
+    |> parse_row()
+    |> fill_current(previous)
+    |> (&parse_response(&1, tail, [&1 | data])).()
+  end
 
-      parse_response(t, current, data ++ [current])
-    else
-      parse_response(t, previous, data)
+  defp fill_current(current, previous) do
+    case Map.fetch(current, "name") do
+      :error ->
+        current
+        |> Map.put("name", previous["name"])
+        |> Map.put("labels", previous["labels"])
+      {:ok, _} -> current
     end
   end
 
   defp parse_row(data) do
     [ts, latlon, rest] = String.split(data, "/")
     {parsedTs, ""} = Integer.parse(String.replace(ts, "=", ""))
-    Map.merge(%{"ts" => parsedTs, "latlon" => latlon}, String.split(rest) |> parse_rest)
+    Map.merge(%{
+      "ts" => parsedTs,
+      "lat:lon" => latlon # not sure here ?
+      }, rest |> String.split() |> parse_rest())
   end
 
   defp parse_rest([def, value]) do
     [name, rest] = String.split(def, "{")
     [labels_text, _] = String.split(rest, "}")
 
-    labels = parse_labels(String.split(labels_text, ","), %{})
+    labels =
+      labels_text
+      |> String.split(",")
+      |> parse_labels(%{})
 
     %{"name" => name, "labels" => labels, "value" => value}
+  end
+
+  defp parse_rest([value]) do
+    %{"value" => value}
   end
 
   defp parse_labels([h | t], labels) do
@@ -111,9 +113,5 @@ defmodule Warpex.HTTP do
 
   defp parse_labels([], labels) do
     labels
-  end
-
-  defp parse_rest([value]) do
-    %{"value" => value}
   end
 end
