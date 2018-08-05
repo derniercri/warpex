@@ -2,8 +2,12 @@ defmodule Warpex.HTTP do
   alias Warpex.Application
   @moduledoc false
 
+  use HTTPoison.Base
+
+  def process_url(url), do: Application.address() <> url
+
   def map_to_text(data) do
-    Enum.reduce(data, "", &("#{&2}\n#{transform_item(&1)}"))
+    Enum.reduce(data, "", &"#{&2}\n#{transform_item(&1)}")
   end
 
   def transform_item(item) do
@@ -11,9 +15,8 @@ defmodule Warpex.HTTP do
     |> Map.put_new("lat:lon", "")
     |> Map.put_new("elev", "")
     |> (fn i ->
-        "#{i["ts"]}/#{i["lat:lon"]}/#{i["elev"]} "
-        <> "#{i["name"]}{#{i["labels"]}} #{i["val"]}"
-      end).()
+          "#{i["ts"]}/#{i["lat:lon"]}/#{i["elev"]} " <> "#{i["name"]}{#{i["labels"]}} #{i["val"]}"
+        end).()
   end
 
   defp headers(key_type) do
@@ -25,9 +28,9 @@ defmodule Warpex.HTTP do
 
   def get(endpoint, params) do
     opts = Application.httpoison_opts()
-    opts = [ {:params, params} | opts ]
+    opts = [{:params, params} | opts]
 
-    Application.address() <> endpoint
+    endpoint
     |> HTTPoison.get(headers(:read), opts)
     |> handle_response()
   end
@@ -35,7 +38,7 @@ defmodule Warpex.HTTP do
   def post(endpoint, data) do
     opts = Application.httpoison_opts()
 
-    Application.address() <> endpoint
+    endpoint
     |> HTTPoison.post(data, headers(:write), opts)
     |> handle_response()
   end
@@ -55,7 +58,7 @@ defmodule Warpex.HTTP do
     end
   end
 
-  def parse_response( _previous, [], data) do
+  def parse_response(_previous, [], data) do
     Enum.reverse(data)
   end
 
@@ -63,7 +66,7 @@ defmodule Warpex.HTTP do
     parse_response(previous, tail, data)
   end
 
-  def parse_response(previous, [head | tail],  data) do
+  def parse_response(previous, [head | tail], data) do
     head
     |> parse_row()
     |> fill_current(previous)
@@ -76,17 +79,24 @@ defmodule Warpex.HTTP do
         current
         |> Map.put("name", previous["name"])
         |> Map.put("labels", previous["labels"])
-      {:ok, _} -> current
+
+      {:ok, _} ->
+        current
     end
   end
 
   defp parse_row(data) do
     [ts, latlon, rest] = String.split(data, "/")
     {parsedTs, ""} = Integer.parse(String.replace(ts, "=", ""))
-    Map.merge(%{
-      "ts" => parsedTs,
-      "lat:lon" => latlon # not sure here ?
-      }, rest |> String.split() |> parse_rest())
+
+    Map.merge(
+      %{
+        "ts" => parsedTs,
+        # not sure here ?
+        "lat:lon" => latlon
+      },
+      rest |> String.split() |> parse_rest()
+    )
   end
 
   defp parse_rest([def, value]) do

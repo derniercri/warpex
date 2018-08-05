@@ -27,4 +27,13 @@ use Mix.Config
 # Configuration from the imported file will override the ones defined
 # here (which is why it is important to import them last).
 #
-#     import_config "#{Mix.env}.exs"
+# import_config "#{Mix.env()}.exs"
+config :warpex,
+  # defaults to System.get_env("WARP10_ADDRESS"),
+  address: "http://localhost",
+  # defaults to System.get_env("WARP10_READ_KEY")
+  read_key: "xxxxx",
+  # defaults to System.get_env("WARP10_WRITE_KEY")
+  write_key: "xxxxx",
+  # defaults to []
+  httpoison_opts: [timeout: 5000]

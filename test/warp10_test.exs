@@ -31,4 +31,22 @@ defmodule WarpexTest do
     assert List.last(items)["labels"]["state"] == "unknow"
     assert List.last(items)["ts"] == 1_523_054_428_586_077
   end
+
+  # test "request" do
+  #  dt = %DateTime{
+  #    year: 2000,
+  #    month: 2,
+  #    day: 29,
+  #    zone_abbr: "CET",
+  #    hour: 23,
+  #    minute: 0,
+  #    second: 7,
+  #    microsecond: {0, 0},
+  #    utc_offset: 3600,
+  #    std_offset: 0,
+  #    time_zone: "Europe/Warsaw"
+  #  }
+  #
+  #    Warpex.fetch("~metric.1.*{}", dt, dt)
+  #  end
 end
