@@ -10,7 +10,7 @@ defmodule Warpex.MixProject do
       elixir: "~> 1.6",
       description: "Warp10 Geo Time Series database client for Elixir",
       package: package(),
-      docs: docs(),
+      # docs: docs(),
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       deps: deps()
