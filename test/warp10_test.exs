@@ -28,6 +28,7 @@ defmodule WarpexTest do
     assert List.last(items)["latlon"] == "50.683299992233515:2.8832999244332314"
     assert List.last(items)["value"] == "36.7"
     assert List.last(items)["name"] == "3.12.6"
+    assert List.last(items)["elev"] == "214748"
   end
 
   # test "request" do

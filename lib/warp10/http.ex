@@ -75,29 +75,27 @@ defmodule Warpex.HTTP do
     |> (&parse_response(&1, tail, [&1 | data])).()
   end
 
+  defp fill(current, previous, key) do
+    case current[key] do
+      "" ->
+        current
+        |> Map.put(key, previous[key])
+
+      nil ->
+        current
+        |> Map.put(key, previous[key])
+
+      _ ->
+        current
+    end
+  end
+
   defp fill_current(current, previous) do
-    current =
-      case Map.fetch(current, "name") do
-        :error ->
-          current
-          |> Map.put("name", previous["name"])
-          |> Map.put("labels", previous["labels"])
-
-        {:ok, _} ->
-          current
-      end
-
-    current =
-      case current["latlon"] do
-        "" ->
-          current
-          |> Map.put("latlon", previous["latlon"])
-
-        _ ->
-          current
-      end
-
     current
+    |> fill(previous, "latlon")
+    |> fill(previous, "elev")
+    |> fill(previous, "labels")
+    |> fill(previous, "name")
   end
 
   defp parse_row(data) do
