@@ -12,10 +12,10 @@ defmodule Warpex.HTTP do
 
   def transform_item(item) do
     item
-    |> Map.put_new("lat:lon", "")
+    |> Map.put_new("latlon", "")
     |> Map.put_new("elev", "")
     |> (fn i ->
-          "#{i["ts"]}/#{i["lat:lon"]}/#{i["elev"]} " <> "#{i["name"]}{#{i["labels"]}} #{i["val"]}"
+          "#{i["ts"]}/#{i["latlon"]}/#{i["elev"]} " <> "#{i["name"]}{#{i["labels"]}} #{i["val"]}"
         end).()
   end
 
@@ -74,29 +74,48 @@ defmodule Warpex.HTTP do
   end
 
   defp fill_current(current, previous) do
-    case Map.fetch(current, "name") do
-      :error ->
-        current
-        |> Map.put("name", previous["name"])
-        |> Map.put("labels", previous["labels"])
+    current =
+      case Map.fetch(current, "name") do
+        :error ->
+          current
+          |> Map.put("name", previous["name"])
+          |> Map.put("labels", previous["labels"])
 
-      {:ok, _} ->
-        current
-    end
+        {:ok, _} ->
+          current
+      end
+
+    current =
+      case current["latlon"] do
+        "" ->
+          current
+          |> Map.put("latlon", previous["latlon"])
+
+        _ ->
+          current
+      end
+
+    current
   end
 
   defp parse_row(data) do
-    [ts, latlon, rest] = String.split(data, "/")
-    {parsedTs, ""} = Integer.parse(String.replace(ts, "=", ""))
+    {parsed_map, rest} =
+      case String.split(data, "/") do
+        [ts, latlon, rest] ->
+          {%{
+             "ts" => elem(Integer.parse(String.replace(ts, "=", "")), 0),
+             "latlon" => latlon
+           }, rest}
+      end
 
     Map.merge(
-      %{
-        "ts" => parsedTs,
-        # not sure here ?
-        "lat:lon" => latlon
-      },
+      parsed_map,
       rest |> String.split() |> parse_rest()
     )
+  end
+
+  defp parse_rest([elev, def, value]) do
+    Map.put(parse_rest([def, value]), "elev", elev)
   end
 
   defp parse_rest([def, value]) do

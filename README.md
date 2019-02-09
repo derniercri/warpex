@@ -35,6 +35,8 @@ And then call functions like:
 {status, response} = Warpex.update(
     [%{
         "labels" => "label1=anything,label2=anotherthing", 
+        "latlon" => "50.683299992233515:2.8832999244332314", 
+        "elev" => "214748",
         "name" => "metric.1.memory_available", 
         "val" => 12, 
         "ts" => 1521969018754000
