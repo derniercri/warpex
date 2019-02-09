@@ -14,7 +14,7 @@ def application do
 end
   
 def deps do
-  [{:warpex, "~> 1.1"}]
+  [{:warpex, "~> 1.2"}]
 end
 ```
 

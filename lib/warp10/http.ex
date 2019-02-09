@@ -2,6 +2,8 @@ defmodule Warpex.HTTP do
   alias Warpex.Application
   @moduledoc false
 
+  alias Warpex.HTTP
+
   use HTTPoison.Base
 
   def process_url(url), do: Application.address() <> url
@@ -31,7 +33,7 @@ defmodule Warpex.HTTP do
     opts = [{:params, params} | opts]
 
     endpoint
-    |> HTTPoison.get(headers(:read), opts)
+    |> HTTP.get(headers(:read), opts)
     |> handle_response()
   end
 
@@ -39,7 +41,7 @@ defmodule Warpex.HTTP do
     opts = Application.httpoison_opts()
 
     endpoint
-    |> HTTPoison.post(data, headers(:write), opts)
+    |> HTTP.post(data, headers(:write), opts)
     |> handle_response()
   end
 
