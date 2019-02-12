@@ -31,6 +31,16 @@ defmodule WarpexTest do
     assert List.last(items)["elev"] == "214748"
   end
 
+  test "parse other data" do
+    data = """
+    1550012535222000/50.683299992233515:2.8832999244332314/214748 4.12.6{.app=werk-dev} 36.5
+    =1550011981146000/50.683299992233515:2.8832999244332314/214748 36.5
+    """
+
+    items = Warpex.parse_result(data)
+    assert List.last(items)["name"] == "4.12.6"
+  end
+
   # test "request" do
   #  dt = %DateTime{
   #    year: 2000,

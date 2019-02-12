@@ -99,27 +99,40 @@ defmodule Warpex.HTTP do
   end
 
   defp parse_row(data) do
-    {parsed_map, rest} =
-      case String.split(data, "/") do
-        [ts, latlon, rest] ->
-          {%{
-             "ts" => elem(Integer.parse(String.replace(ts, "=", "")), 0),
-             "latlon" => latlon
-           }, rest}
+    [headers, name, value] =
+      case String.split(data, " ") do
+        [_headers, _name, _value] = data -> data
+        [headers, value] -> [headers, nil, value]
       end
+
+    parsed_map =
+      Map.merge(
+        %{"value" => value},
+        parse_header(headers)
+      )
 
     Map.merge(
       parsed_map,
-      rest |> String.split() |> parse_rest()
+      parse_name(name)
     )
   end
 
-  defp parse_rest([elev, def, value]) do
-    Map.put(parse_rest([def, value]), "elev", elev)
+  defp parse_header(header) do
+    [ts, latlon, elev] = String.split(String.replace(header, "=", ""), "/")
+
+    %{
+      "ts" => elem(Integer.parse(ts), 0),
+      "latlon" => latlon,
+      "elev" => elev
+    }
   end
 
-  defp parse_rest([def, value]) do
-    [name, rest] = String.split(def, "{")
+  defp parse_name(nil) do
+    %{"name" => nil, "labels" => nil}
+  end
+
+  defp parse_name(name) do
+    [name, rest] = String.split(name, "{")
     [labels_text, _] = String.split(rest, "}")
 
     labels =
@@ -127,11 +140,7 @@ defmodule Warpex.HTTP do
       |> String.split(",")
       |> parse_labels(%{})
 
-    %{"name" => name, "labels" => labels, "value" => value}
-  end
-
-  defp parse_rest([value]) do
-    %{"value" => value}
+    %{"name" => name, "labels" => labels}
   end
 
   defp parse_labels([h | t], labels) do
