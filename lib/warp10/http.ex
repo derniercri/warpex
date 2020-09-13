@@ -38,6 +38,8 @@ defmodule Warpex.HTTP do
   end
 
   def post(endpoint, data) do
+    IO.inspect "DEBUG WARPEX"
+    IO.inspect data
     opts = Application.httpoison_opts()
 
     endpoint

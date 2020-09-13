@@ -40,7 +40,7 @@ defmodule Warpex do
   @doc """
   Fetch data
 
-  Returns {:ok, result} or {:error, :result}.
+  Returns {:ok, result} or {:error, result}.
 
   ## Examples
 
