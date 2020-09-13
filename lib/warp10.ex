@@ -23,6 +23,21 @@ defmodule Warpex do
   """
 
   @doc """
+  Save raw data
+
+  Returns {:ok, []} or {:error, :result}.
+
+  ## Examples
+      #iex> data = "1521969018757000/50.683299992233515:2.8832999244332314/214748 3.12.6{.app=drew-dev} 36.5"
+      #iex> Warpex.update_raw(data)
+      {:ok, []}
+
+  """
+  def update_raw(data) do
+    HTTP.post("/api/v0/update", data)
+  end
+
+  @doc """
   Save a list of data
 
   Returns {:ok, []} or {:error, :result}.
