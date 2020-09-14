@@ -23,6 +23,21 @@ defmodule Warpex do
   """
 
   @doc """
+  Save raw data
+
+  Returns {:ok, []} or {:error, :result}.
+
+  ## Examples
+      #iex> data = "1521969018757000/50.683299992233515:2.8832999244332314/214748 3.12.6{.app=drew-dev} 36.5"
+      #iex> Warpex.update_raw(data)
+      {:ok, []}
+
+  """
+  def update_raw(data) do
+    HTTP.post("/api/v0/update", data)
+  end
+
+  @doc """
   Save a list of data
 
   Returns {:ok, []} or {:error, :result}.
@@ -40,7 +55,7 @@ defmodule Warpex do
   @doc """
   Fetch data
 
-  Returns {:ok, result} or {:error, :result}.
+  Returns {:ok, result} or {:error, result}.
 
   ## Examples
 
@@ -57,12 +72,32 @@ defmodule Warpex do
   end
 
   @doc """
+  Fetch data with format
+
+  Returns {:ok, result} or {:error, result}.
+
+  ## Examples
+
+      #iex> Warpex.fetch("~metric.1.*{}", Datetime.now, Datetime.now, "fulltext")
+      {:ok, []}
+
+  """
+  def fetch(selector, start, stop, format) do
+    HTTP.get("/api/v0/fetch", %{
+      selector: selector,
+      start: DateTime.to_iso8601(start),
+      stop: DateTime.to_iso8601(stop),
+      format: format
+    })
+  end
+
+  @doc """
   Execute warpcript
 
   Returns {:ok, result} or {:error, :result}.
   """
-  def exec_warpscript(script) do
-    case HTTP.post("/api/v0/exec/warpscript", script) do
+  def exec(script) do
+    case HTTP.post("/api/v0/exec", script) do
       {:ok, text} -> Poison.decode(text)
       {:error, error} -> {:error, error}
     end

@@ -9,16 +9,21 @@ defmodule Warpex.HTTP do
   def process_url(url), do: Application.address() <> url
 
   def map_to_text(data) do
-    Enum.reduce(data, "", &"#{&2}\n#{transform_item(&1)}")
+    data
+    |> Enum.map(&complete_map(&1))
+    |> Enum.map(&format_item(&1))
+    |> Enum.join("\n")
   end
 
-  def transform_item(item) do
+  def complete_map(item) do
     item
     |> Map.put_new("latlon", "")
     |> Map.put_new("elev", "")
-    |> (fn i ->
-          "#{i["ts"]}/#{i["latlon"]}/#{i["elev"]} " <> "#{i["name"]}{#{i["labels"]}} #{i["val"]}"
-        end).()
+  end
+
+  def format_item(item) do
+    "#{item["ts"]}/#{item["latlon"]}/#{item["elev"]} " <>
+      "#{item["name"]}{#{item["labels"]}} #{item["val"]}"
   end
 
   defp headers(key_type) do

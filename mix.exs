@@ -28,9 +28,9 @@ defmodule Warpex.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:httpoison, "~> 1.5"},
-      {:poison, "~> 3.1"},
-      {:ex_doc, "~> 0.19", only: :dev}
+      {:httpoison, "1.7.0"},
+      {:poison, "4.0.1"},
+      {:ex_doc, "0.22.2", only: :dev}
     ]
   end
 
