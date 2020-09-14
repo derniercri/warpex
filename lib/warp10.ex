@@ -72,12 +72,32 @@ defmodule Warpex do
   end
 
   @doc """
+  Fetch data with format
+
+  Returns {:ok, result} or {:error, result}.
+
+  ## Examples
+
+      #iex> Warpex.fetch("~metric.1.*{}", Datetime.now, Datetime.now, "fulltext")
+      {:ok, []}
+
+  """
+  def fetch(selector, start, stop, format) do
+    HTTP.get("/api/v0/fetch", %{
+      selector: selector,
+      start: DateTime.to_iso8601(start),
+      stop: DateTime.to_iso8601(stop),
+      format: format
+    })
+  end
+
+  @doc """
   Execute warpcript
 
   Returns {:ok, result} or {:error, :result}.
   """
-  def exec_warpscript(script) do
-    case HTTP.post("/api/v0/exec/warpscript", script) do
+  def exec(script) do
+    case HTTP.post("/api/v0/exec", script) do
       {:ok, text} -> Poison.decode(text)
       {:error, error} -> {:error, error}
     end

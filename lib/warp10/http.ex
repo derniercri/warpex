@@ -22,7 +22,8 @@ defmodule Warpex.HTTP do
   end
 
   def format_item(item) do
-    "#{item["ts"]}/#{item["latlon"]}/#{item["elev"]} " <> "#{item["name"]}{#{item["labels"]}} #{item["val"]}"
+    "#{item["ts"]}/#{item["latlon"]}/#{item["elev"]} " <>
+      "#{item["name"]}{#{item["labels"]}} #{item["val"]}"
   end
 
   defp headers(key_type) do

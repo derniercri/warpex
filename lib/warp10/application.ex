@@ -16,8 +16,9 @@ defmodule Warpex.Application do
       address: address,
       write_key: write_key,
       read_key: read_key,
-      httpoison_opts: httpoison_opts,
+      httpoison_opts: httpoison_opts
     }
+
     Agent.start_link(fn -> config end, name: __MODULE__)
   end
 
@@ -25,19 +26,20 @@ defmodule Warpex.Application do
   def get_key(key_type) do
     case key_type do
       :write ->
-        Agent.get(__MODULE__, fn(state) -> state.write_key end)
+        Agent.get(__MODULE__, fn state -> state.write_key end)
+
       :read ->
-        Agent.get(__MODULE__, fn(state) -> state.read_key end)
+        Agent.get(__MODULE__, fn state -> state.read_key end)
     end
   end
 
   @doc false
   def address() do
-    Agent.get(__MODULE__, fn(state) -> state.address end)
+    Agent.get(__MODULE__, fn state -> state.address end)
   end
 
   @doc false
   def httpoison_opts() do
-    Agent.get(__MODULE__, fn(state) -> state.httpoison_opts end)
+    Agent.get(__MODULE__, fn state -> state.httpoison_opts end)
   end
 end
